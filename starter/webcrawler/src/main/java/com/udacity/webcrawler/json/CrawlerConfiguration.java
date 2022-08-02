@@ -8,9 +8,13 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /**
  * A data class that represents the configuration of a single web crawl.
  */
+@JsonDeserialize(builder = CrawlerConfiguration.Builder.class)
 public final class CrawlerConfiguration {
 
   private final List<String> startPages;
@@ -48,7 +52,8 @@ public final class CrawlerConfiguration {
   }
 
   /**
-   * An unmodifiable {@link List} of URLs that define the starting points of the web crawl. It
+   * An unmodifiable {@link List} of URLs that define the starting points of the
+   * web crawl. It
    * should not contain any duplicate URLs.
    */
   public List<String> getStartPages() {
@@ -56,7 +61,8 @@ public final class CrawlerConfiguration {
   }
 
   /**
-   * A {@link List} of regular expression {@link Pattern}s that determine which URLs, if any, the
+   * A {@link List} of regular expression {@link Pattern}s that determine which
+   * URLs, if any, the
    * web crawler should not follow.
    */
   public List<Pattern> getIgnoredUrls() {
@@ -64,33 +70,43 @@ public final class CrawlerConfiguration {
   }
 
   /**
-   * A {@link List} of regular expression {@link Pattern}s that determine which words, if any, the
-   * web crawler should not be counted toward the popular word count returned from the crawl.
+   * A {@link List} of regular expression {@link Pattern}s that determine which
+   * words, if any, the
+   * web crawler should not be counted toward the popular word count returned from
+   * the crawl.
    */
   public List<Pattern> getIgnoredWords() {
     return ignoredWords;
   }
 
   /**
-   * The desired parallelism (e.g., number of CPU cores) that should be used for the web crawl. This
+   * The desired parallelism (e.g., number of CPU cores) that should be used for
+   * the web crawl. This
    * setting is optional.
    *
-   * <p>If set to 1, the legacy sequential crawler will be used (unless
-   * {@link #getImplementationOverride()} explicitly specifies otherwise). If set to a value less
-   * than 1, the crawler will default to using the number of available CPU cores on the system.
+   * <p>
+   * If set to 1, the legacy sequential crawler will be used (unless
+   * {@link #getImplementationOverride()} explicitly specifies otherwise). If set
+   * to a value less
+   * than 1, the crawler will default to using the number of available CPU cores
+   * on the system.
    */
   public int getParallelism() {
     return parallelism;
   }
 
   /**
-   * An explicit override for which web crawler implementation should be used for this crawl.
+   * An explicit override for which web crawler implementation should be used for
+   * this crawl.
    *
-   * <p>If set, it should be the fully qualified class name of a
+   * <p>
+   * If set, it should be the fully qualified class name of a
    * {@link com.udacity.webcrawler.WebCrawler} implementation, for example
    * {@code "com.udacity.webcrawler.SequentialWebCrawler"}.
    *
-   * <p>If unset or empty, the value of {@link #getParallelism()} setting is used to determine which
+   * <p>
+   * If unset or empty, the value of {@link #getParallelism()} setting is used to
+   * determine which
    * crawler implementation to use.
    */
   public String getImplementationOverride() {
@@ -100,16 +116,23 @@ public final class CrawlerConfiguration {
   /**
    * The maximum depth allowed for the crawl.
    *
-   * <p>The "depth" of a crawl is the number of links the crawler has followed, starting from the
+   * <p>
+   * The "depth" of a crawl is the number of links the crawler has followed,
+   * starting from the
    * starting URLs (see {@link #getStartPages()}).
    *
    * <p>
-   * <p>Example:
+   * <p>
+   * Example:
    *
-   * <p>Suppose the max depth is 2, and suppose the starting page "A" links to the following web
+   * <p>
+   * Suppose the max depth is 2, and suppose the starting page "A" links to the
+   * following web
    * pages:
    *
-   * <p><pre>
+   * <p>
+   * 
+   * <pre>
    *            A
    *         /  |  \
    *        B   C   D
@@ -117,8 +140,11 @@ public final class CrawlerConfiguration {
    *      E  F        G
    * </pre>
    *
-   * <p>In this example, the crawler will visit at most A, B, C, and D. The crawler may visit
-   * <i>fewer</i> pages if it runs out of time before it can finish. See {@link #getTimeout()}.
+   * <p>
+   * In this example, the crawler will visit at most A, B, C, and D. The crawler
+   * may visit
+   * <i>fewer</i> pages if it runs out of time before it can finish. See
+   * {@link #getTimeout()}.
    */
   public int getMaxDepth() {
     return maxDepth;
@@ -127,9 +153,13 @@ public final class CrawlerConfiguration {
   /**
    * The maximum amount of time the crawler is allowed to run.
    *
-   * <p>This is not a strict deadline, meaning the crawler does not have to drop everything and
-   * terminate immediately. However, Once this amount of time has been reached, the crawler will
-   * finish processing any HTML it has already downloaded, but it will not download any more pages
+   * <p>
+   * This is not a strict deadline, meaning the crawler does not have to drop
+   * everything and
+   * terminate immediately. However, Once this amount of time has been reached,
+   * the crawler will
+   * finish processing any HTML it has already downloaded, but it will not
+   * download any more pages
    * or follow any more links.
    */
   public Duration getTimeout() {
@@ -139,32 +169,42 @@ public final class CrawlerConfiguration {
   /**
    * The number of popular words the crawler should record in its output.
    *
-   * <p>See {@link com.udacity.webcrawler.json.CrawlResult#getWordCounts()} for more information.
+   * <p>
+   * See {@link com.udacity.webcrawler.json.CrawlResult#getWordCounts()} for more
+   * information.
    */
   public int getPopularWordCount() {
     return popularWordCount;
   }
 
   /**
-   * Path to the output file where performance data from this web crawl should be written.
+   * Path to the output file where performance data from this web crawl should be
+   * written.
    *
-   * <p>If a file already exists at the path, performance information should be appended to the
+   * <p>
+   * If a file already exists at the path, performance information should be
+   * appended to the
    * existing file.
    *
-   * <p>If the path is empty, the data will be written to standard output.
+   * <p>
+   * If the path is empty, the data will be written to standard output.
    */
   public String getProfileOutputPath() {
     return profileOutputPath;
   }
 
   /**
-   * Path to the output file where the result data from this web crawl should be written.
+   * Path to the output file where the result data from this web crawl should be
+   * written.
    *
-   * <p>If a file already exists at the path, the existing file should be replaced.
+   * <p>
+   * If a file already exists at the path, the existing file should be replaced.
    *
-   * <p>If the path is empty, the data will be written to standard output.
+   * <p>
+   * If the path is empty, the data will be written to standard output.
    *
-   * <p>See {@link com.udacity.webcrawler.json.CrawlResult}.
+   * <p>
+   * See {@link com.udacity.webcrawler.json.CrawlResult}.
    */
   public String getResultPath() {
     return resultPath;
@@ -188,8 +228,11 @@ public final class CrawlerConfiguration {
     /**
      * Adds a start page URL.
      *
-     * <p>Does nothing if the given page has already been added. See {@link #getStartPages()}.
+     * <p>
+     * Does nothing if the given page has already been added. See
+     * {@link #getStartPages()}.
      */
+    @JsonProperty("startPages")
     public Builder addStartPages(String... startPages) {
       for (String startPage : startPages) {
         this.startPages.add(Objects.requireNonNull(startPage));
@@ -198,12 +241,17 @@ public final class CrawlerConfiguration {
     }
 
     /**
-     * Adds a regular expression pattern that defines URLs to ignore during the crawl.
+     * Adds a regular expression pattern that defines URLs to ignore during the
+     * crawl.
      *
-     * <p>Does nothing if the same pattern has already been added. See {@link #getIgnoredUrls()}.
+     * <p>
+     * Does nothing if the same pattern has already been added. See
+     * {@link #getIgnoredUrls()}.
      *
-     * @param patterns one or more regular expressions that define a valid {@link Pattern}.
+     * @param patterns one or more regular expressions that define a valid
+     *                 {@link Pattern}.
      */
+    @JsonProperty("ignoredUrls")
     public Builder addIgnoredUrls(String... patterns) {
       for (String pattern : patterns) {
         ignoredUrls.add(Objects.requireNonNull(pattern));
@@ -212,16 +260,23 @@ public final class CrawlerConfiguration {
     }
 
     /**
-     * Adds a regular expression pattern that defines words to ignore when computing the popular
+     * Adds a regular expression pattern that defines words to ignore when computing
+     * the popular
      * counts.
      *
-     * <p>Does nothing if the same pattern has already been added. See {@link #getIgnoredWords()}.
+     * <p>
+     * Does nothing if the same pattern has already been added. See
+     * {@link #getIgnoredWords()}.
      *
-     * <p>See {@link com.udacity.webcrawler.json.CrawlResult#getWordCounts()} for more information
+     * <p>
+     * See {@link com.udacity.webcrawler.json.CrawlResult#getWordCounts()} for more
+     * information
      * about the popular word computation.
      *
-     * @param patterns one or more regular expressions that define a valid {@link Pattern}.
+     * @param patterns one or more regular expressions that define a valid
+     *                 {@link Pattern}.
      */
+    @JsonProperty("ignoredWords")
     public Builder addIgnoredWords(String... patterns) {
       for (String pattern : patterns) {
         ignoredWords.add(Objects.requireNonNull(pattern));
@@ -232,19 +287,25 @@ public final class CrawlerConfiguration {
     /**
      * Sets the desired parallelism of the crawl.
      *
-     * <p>See {@link #getParallelism()}.
+     * <p>
+     * See {@link #getParallelism()}.
      */
+    @JsonProperty("parallelism")
     public Builder setParallelism(int parallelism) {
       this.parallelism = parallelism;
       return this;
     }
 
     /**
-     * Overrides the {@link com.udacity.webcrawler.WebCrawler} implementation that should be used
+     * Overrides the {@link com.udacity.webcrawler.WebCrawler} implementation that
+     * should be used
      * for the crawl.
      *
-     * <p>See {@link #getImplementationOverride()}.
+     * <p>
+     * See {@link #getImplementationOverride()}.
      */
+
+    @JsonProperty("implementationOverride")
     public Builder setImplementationOverride(String implementationOverride) {
       this.implementationOverride = Objects.requireNonNull(implementationOverride);
       return this;
@@ -253,8 +314,11 @@ public final class CrawlerConfiguration {
     /**
      * Sets the maximum depth of the crawl.
      *
-     * <p>See {@link #getMaxDepth()}.
+     * <p>
+     * See {@link #getMaxDepth()}.
      */
+
+    @JsonProperty("maxDepth")
     public Builder setMaxDepth(int maxDepth) {
       this.maxDepth = maxDepth;
       return this;
@@ -263,8 +327,10 @@ public final class CrawlerConfiguration {
     /**
      * Sets the maximum amount of time allowed for the crawl, specified in seconds.
      *
-     * <p>See {@link #getTimeout()}.
+     * <p>
+     * See {@link #getTimeout()}.
      */
+    @JsonProperty("timeoutSeconds")
     public Builder setTimeoutSeconds(int seconds) {
       this.timeoutSeconds = seconds;
       return this;
@@ -273,18 +339,23 @@ public final class CrawlerConfiguration {
     /**
      * Sets the number of most popular words that should be reported by the crawl.
      *
-     * <p>See {@link #getPopularWordCount()}.
+     * <p>
+     * See {@link #getPopularWordCount()}.
      */
+    @JsonProperty("popularWordCount")
     public Builder setPopularWordCount(int popularWordCount) {
       this.popularWordCount = popularWordCount;
       return this;
     }
 
     /**
-     * Sets the path to the file where profiling data for this crawl should be written.
+     * Sets the path to the file where profiling data for this crawl should be
+     * written.
      *
-     * <p>See {@link #getProfileOutputPath()}.
+     * <p>
+     * See {@link #getProfileOutputPath()}.
      */
+    @JsonProperty("profileOutputPath")
     public Builder setProfileOutputPath(String profileOutputPath) {
       this.profileOutputPath = Objects.requireNonNull(profileOutputPath);
       return this;
@@ -293,8 +364,10 @@ public final class CrawlerConfiguration {
     /**
      * Sets the path to the file where the result of this crawl should be written.
      *
-     * <p>See {@link #getResultPath()}.
+     * <p>
+     * See {@link #getResultPath()}.
      */
+    @JsonProperty("resultPath")
     public Builder setResultPath(String resultPath) {
       this.resultPath = Objects.requireNonNull(resultPath);
       return this;

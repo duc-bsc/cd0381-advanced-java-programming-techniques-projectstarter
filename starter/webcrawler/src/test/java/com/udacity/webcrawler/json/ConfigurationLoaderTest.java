@@ -52,7 +52,8 @@ public final class ConfigurationLoaderTest {
 
   @Test
   public void testOptionalOptions() {
-    // Same as above, but without any explicit implementationOverride or parallelism.
+    // Same as above, but without any explicit implementationOverride or
+    // parallelism.
     String json = "{ " +
         "\"maxDepth\": 100, " +
         "\"timeoutSeconds\": 10, " +
